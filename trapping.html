@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plasmonic Optical Tweezers: Sub-Wavelength Trapping of Nanoparticles and Molecules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f7f4;
+    --paper:#fdfdfb;
+    --ink:#1c1e20;
+    --ink-2:#5b6167;
+    --ink-3:#8a8f93;
+    --rule:#e2e0d7;
+    --accent:#3f5b63;      /* oxidized-bronze / patina teal — thematic, not decorative */
+    --accent-warm:#a1783c; /* muted brass, used only for active/interactive state */
+    --measure: 42rem;
+    --nav-w: 200px;
+    --margin-w: 240px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    font-size:19px;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4,.ui,button,nav,.aside-label,label,.readout,.axis-label,.credits dt{
+    font-family:'Inter', sans-serif;
+  }
+  a{color:var(--accent);}
+  a:hover{color:var(--accent-warm);}
+  :focus-visible{outline:2px solid var(--accent-warm); outline-offset:2px;}
+
+  /* ================= layout scaffold ================= */
+  .layout{
+    max-width:1280px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: var(--nav-w) minmax(0,var(--measure)) var(--margin-w);
+    column-gap:3.2rem;
+    padding:0 2.5rem;
+  }
+  @media (max-width:1180px){
+    .layout{grid-template-columns: var(--nav-w) minmax(0,1fr); column-gap:2.4rem;}
+    .side-notes-col{display:none;}
+  }
+  @media (max-width:820px){
+    .layout{grid-template-columns: 1fr; padding:0 1.4rem;}
+  }
+
+  /* ================= left nav ================= */
+  .nav{
+    position:sticky; top:0; align-self:start;
+    height:100vh; padding:3rem 0 2rem;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .nav-brand{
+    font-weight:600; font-size:0.82rem; letter-spacing:0.02em;
+    color:var(--ink); text-decoration:none; display:block; margin-bottom:2.4rem; line-height:1.4;
+  }
+  .nav-toggle{display:none;}
+  .toc{list-style:none; margin:0; padding:0; font-size:0.83rem;}
+  .toc li{margin-bottom:0.7rem;}
+  .toc a{color:var(--ink-2); text-decoration:none; transition:color .15s ease; border-left:2px solid transparent; padding-left:0.7rem; display:block;}
+  .toc a.active{color:var(--ink); border-left-color:var(--accent-warm); font-weight:600;}
+  .progress{font-size:0.72rem; color:var(--ink-3);}
+  .progress-track{width:100%; height:2px; background:var(--rule); margin-top:0.5rem;}
+  .progress-fill{height:100%; width:0%; background:var(--accent-warm);}
+
+  @media (max-width:820px){
+    .nav{
+      position:sticky; height:auto; padding:1rem 0;
+      background:var(--bg); border-bottom:1px solid var(--rule); z-index:30;
+    }
+    .nav-row{display:flex; align-items:center; gap:1rem;}
+    .nav-brand{margin-bottom:0;}
+    .nav-toggle{
+      display:inline-block; margin-left:auto; background:none; border:1px solid var(--rule);
+      font-size:0.78rem; padding:0.4rem 0.75rem; color:var(--ink); cursor:pointer;
+    }
+    .toc{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      background:var(--paper); border-bottom:1px solid var(--rule);
+      padding:1rem 1.4rem 1.4rem; max-height:70vh; overflow-y:auto;
+    }
+    .toc.open{display:block;}
+    .progress{display:none;}
+  }
+
+  /* ================= main content ================= */
+  main{min-width:0; padding:3.4rem 0 6rem;}
+  .title-block{margin-bottom:3.6rem;}
+  .kicker{
+    font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--ink-3);
+    letter-spacing:0.02em; margin:0 0 1rem;
+  }
+  h1{
+    font-family:'Source Serif 4', serif; font-weight:600;
+    font-size:clamp(1.9rem, 3.4vw, 2.55rem); line-height:1.2; margin:0 0 1.3rem; max-width:22ch;
+  }
+  .abstract{color:var(--ink-2); font-size:1.05rem; max-width:var(--measure); margin:0;}
+  .abstract-label{font-family:'Inter',sans-serif; font-size:0.72rem; font-weight:700; color:var(--accent); margin:0 0 0.7rem;}
+
+  section{scroll-margin-top:2rem;}
+  section + section{margin-top:4.6rem;}
+  h2{
+    font-family:'Inter',sans-serif; font-size:1.05rem; font-weight:700;
+    text-transform:none; margin:0 0 1.5rem; padding-bottom:0.9rem; border-bottom:1px solid var(--rule);
+  }
+  h3{font-family:'Source Serif 4',serif; font-weight:600; font-size:1.28rem; margin:2.4rem 0 0.9rem;}
+  h4{font-family:'Inter',sans-serif; font-weight:600; font-size:0.92rem; color:var(--accent); margin:1.8rem 0 0.6rem;}
+  p{margin:0 0 1.2rem;}
+  em.eqline{font-style:normal;}
+
+  sup.cite{font-size:0.7em; font-family:'Inter',sans-serif;}
+  sup.cite a{color:var(--accent); text-decoration:none; font-weight:600;}
+  sup.cite a:hover{text-decoration:underline;}
+
+  /* margin notes (Tufte-style sidenotes) */
+  .with-note{position:relative;}
+  .marginnote{
+    position:absolute; left:100%; margin-left:2.6rem; top:0; width:var(--margin-w);
+    font-family:'Inter',sans-serif; font-size:0.78rem; line-height:1.55; color:var(--ink-2);
+  }
+  .marginnote .aside-label{
+    display:block; font-size:0.68rem; font-weight:700; color:var(--accent);
+    letter-spacing:0.02em; margin-bottom:0.35rem;
+  }
+  @media (max-width:1180px){
+    .marginnote{
+      position:static; width:auto; margin:1rem 0 1.4rem; padding-left:1rem;
+      border-left:2px solid var(--rule);
+    }
+  }
+
+  /* equation blocks */
+  .eqblock{margin:1.6rem 0 2rem; padding:1.1rem 1.3rem; background:var(--paper); border:1px solid var(--rule); border-left:3px solid var(--accent); font-family:'Source Serif 4',serif; font-size:1.06rem; overflow-x:auto;}
+  .eqblock .eqnum{float:right; font-family:'Inter',sans-serif; font-size:0.72rem; color:var(--ink-3);}
+  .eqblock .eqnote{font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--ink-2); margin-top:0.6rem; line-height:1.5;}
+
+  /* figures — hairline separated, no card/box chrome */
+  .figure{margin:2.2rem 0 2.6rem; padding-top:1.6rem; border-top:1px solid var(--rule);}
+  .figure svg, .figure canvas{display:block; width:100%; height:auto;}
+  .caption{font-family:'Inter',sans-serif; font-size:0.82rem; color:var(--ink-2); margin-top:1rem; line-height:1.55;}
+  .caption b{color:var(--ink); font-weight:600;}
+
+  .controls{display:flex; flex-wrap:wrap; gap:1.6rem 2.2rem; align-items:flex-end; margin:1.2rem 0 1.4rem; font-family:'Inter',sans-serif;}
+  .control{display:flex; flex-direction:column; gap:0.4rem; min-width:150px; font-size:0.8rem; flex:1 1 180px;}
+  .control label{font-weight:600; color:var(--ink);}
+  .control .val{color:var(--accent-warm); font-weight:600;}
+  input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:3px; background:var(--rule); outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:15px; height:15px; border-radius:50%; background:var(--accent-warm); cursor:pointer; border:2px solid var(--paper); box-shadow:0 0 0 1px var(--accent-warm);}
+  input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; background:var(--accent-warm); cursor:pointer; border:2px solid var(--paper); box-shadow:0 0 0 1px var(--accent-warm);}
+  .seg-group{display:flex; border:1px solid var(--rule);}
+  .seg-group button{font-family:'Inter',sans-serif; font-size:0.76rem; background:var(--paper); border:none; padding:0.45rem 0.75rem; color:var(--ink-2); cursor:pointer; border-right:1px solid var(--rule);}
+  .seg-group button:last-child{border-right:none;}
+  .seg-group button.active{background:var(--accent); color:#fff;}
+  button.playbtn{font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:600; background:var(--ink); color:#fff; border:none; padding:0.5rem 0.95rem; cursor:pointer;}
+  button.playbtn:hover{background:var(--accent);}
+  .readout{font-family:'Inter',sans-serif; font-size:0.8rem; color:var(--ink); margin-top:0.9rem;}
+  .readout strong{color:var(--accent-warm);}
+  .readout .badge{display:inline-block; font-size:0.7rem; font-weight:700; padding:0.1rem 0.5rem; border-radius:2px; margin-left:0.35rem;}
+  .badge.stable{background:#e4ece7; color:#2f5c44;}
+  .badge.marginal{background:#f3ecd9; color:#8a6a1f;}
+  .badge.unstable{background:#f4e2df; color:#943f31;}
+
+  .legend{display:flex; gap:1.4rem; font-family:'Inter',sans-serif; font-size:0.76rem; color:var(--ink-2); margin-top:0.6rem; flex-wrap:wrap;}
+  .legend span{display:inline-flex; align-items:center; gap:0.4rem;}
+  .legend i{width:12px; height:3px; display:inline-block;}
+  .colorbar{display:flex; align-items:center; gap:0.6rem; font-family:'Inter',sans-serif; font-size:0.74rem; color:var(--ink-2); margin-top:0.8rem;}
+  .colorbar .bar{flex:1; height:10px; border-radius:1px;}
+
+  .disclaimer{border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); padding:1.1rem 0; margin:2.6rem 0; font-family:'Inter',sans-serif; font-size:0.83rem; color:var(--ink-2);}
+
+  .refs{font-family:'Inter',sans-serif; font-size:0.85rem; padding-left:1.3rem; color:var(--ink-2);}
+  .refs li{margin-bottom:0.8rem;}
+  .refs em{color:var(--ink);}
+
+  .credits dl{display:grid; grid-template-columns:9rem 1fr; row-gap:0.7rem; column-gap:1rem; font-family:'Inter',sans-serif; font-size:0.9rem;}
+  .credits dt{color:var(--ink-3);}
+  .credits dd{margin:0; color:var(--ink);}
+
+  footer.page-footer{margin-top:5rem; padding-top:1.6rem; border-top:1px solid var(--rule); font-family:'Inter',sans-serif; font-size:0.78rem; color:var(--ink-3);}
+
+  .drag-hint{font-family:'Inter',sans-serif; font-size:0.72rem; color:var(--ink-3); margin-top:0.4rem;}
+  svg .draggable{cursor:grab;}
+  svg .draggable:active{cursor:grabbing;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="nav" aria-label="Table of contents">
+    <div>
+      <div class="nav-row">
+        <a href="#top" class="nav-brand">Plasmonic<br>Tweezers</a>
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="tocList">Sections</button>
+      </div>
+      <ul class="toc" id="tocList">
+        <li><a href="#intro" data-sec>Introduction</a></li>
+        <li><a href="#framework" data-sec>Theoretical Framework</a></li>
+        <li><a href="#design" data-sec>Nanostructure Design</a></li>
+        <li><a href="#dynamics" data-sec>Trapping Dynamics</a></li>
+        <li><a href="#thermal" data-sec>Thermal Effects &amp; Outlook</a></li>
+        <li><a href="#references" data-sec>References</a></li>
+        <li><a href="#credits" data-sec>Credits</a></li>
+      </ul>
+    </div>
+    <div class="progress">
+      <span id="progressLabel">Introduction</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <div class="title-block">
+      <p class="kicker">Nanophotonics · Course Project Report</p>
+      <h1>Plasmonic Optical Tweezers: Building Sub-Wavelength Traps for Nanoparticles and Single Molecules</h1>
+    </div>
+
+    <!-- ================= INTRO ================= -->
+    <section id="intro">
+      <h2>1. Introduction</h2>
+      <p>Ashkin, Dziedzic, Bjorkholm, and Chu first demonstrated optical trapping in 1986. They showed that a single, tightly focused laser beam could hold a dielectric sphere in stable equilibrium using nothing but the optical gradient force.<sup class="cite">[<a href="#ref1">1</a>]</sup> Over the four decades since, optical tweezers have become standard equipment in biophysics, soft-matter physics, and analytical chemistry. Scientists use them to stretch DNA molecules, measure the force of molecular motors, and sort cells without touching them. But the technique hits a hard wall: any lens-based system focuses a beam of wavelength λ down to a spot no smaller than about λ/2. For visible or near-infrared lasers, that floor sits at several hundred nanometers. It sets both the trap's strength and the smallest object it can reliably hold.</p>
+      <p class="with-note">This limit comes straight from how the optical forces scale with size. For particles much smaller than the trapping wavelength (the Rayleigh, or point-dipole, regime), the gradient force pulling a particle toward the focus depends on its polarizability. That polarizability scales with the cube of the particle's radius, <em class="eqline">r³</em>. So halving a bead's radius cuts the restoring force by a factor of eight. Meanwhile the bead's own thermal jitter, set by the equipartition theorem, doesn't change with size at all. The trap's depth, measured in units of thermal energy k<sub>B</sub>T, collapses fast as particles shrink. Standard single-beam tweezers become unreliable below about 100 nm and basically useless for isolated biomolecules, which typically have a radius of gyration between 1 and 10 nm.<sup class="cite">[<a href="#ref2">2</a>]</sup>
+        <span class="marginnote"><span class="aside-label">Note</span>There's a second, mostly separate constraint too: Rayleigh scattering force, which grows as r⁶/λ⁴. Combined with the photodamage caused by the high intensities needed to make up for a weak gradient force, this makes simply cranking up the intensity a bad way to trap smaller objects.</span>
+      </p>
+      <p>Our approach follows a strategy first proposed by Novotny, Bian, and Xie in 1997 and built in the lab over the following decade: swap the diffraction-limited far-field focus for a localized surface plasmon resonance (LSPR) held on a metal nanostructure.<sup class="cite">[<a href="#ref2">2</a>]</sup> A surface plasmon is a bound wave of charge, not a traveling wave of light. So its near-field can be squeezed down to whatever size the nanostructure's geometry allows, gaps of a few to a few tens of nanometers, rather than being limited by the wavelength of light. Field gradients across gaps that small are two to three orders of magnitude steeper than anything a diffraction-limited focus can produce. That gives stable traps for particles a normal tweezer could never hold, at laser powers a normal tweezer could never survive using on living material.</p>
+      <p>The rest of this report builds up the physics needed to understand and design these traps (Section 2), reviews the main nanostructure designs used to build them, bowtie antennas, coaxial apertures, and plasmonic nanopillars (Section 3), looks at how nanoparticles and single molecules actually get trapped, including the self-induced back-action effect (Section 4), and ends with the thermal problems that come with any metal-based near-field trap and where on-chip integration might go next (Section 5). Interactive models throughout make the underlying scaling relationships concrete rather than just symbolic.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 280" role="img" aria-label="Side by side schematic comparing a conventional diffraction limited optical trap focal spot roughly four hundred nanometers across with a plasmonic near field trap confined to a ten to twenty nanometer gap between two gold nanostructures">
+          <defs>
+            <radialGradient id="convSpot" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#8a8f93" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#8a8f93" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="plasHot" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#a1783c" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#a1783c" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <text x="175" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="#1c1e20">Conventional gradient-force trap</text>
+          <circle cx="175" cy="150" r="42" fill="none" stroke="#5b6167" stroke-width="1.4" stroke-dasharray="2 3"/>
+          <circle cx="175" cy="150" r="88" fill="url(#convSpot)"/>
+          <circle cx="175" cy="150" r="6" fill="#1c1e20"/>
+          <text x="175" y="150" dy="4" text-anchor="middle" font-family="Inter" font-size="9" fill="#fff">r</text>
+          <line x1="85" y1="150" x2="265" y2="150" stroke="#5b6167" stroke-width="1"/>
+          <text x="175" y="244" text-anchor="middle" font-family="Inter" font-size="11.5" fill="#5b6167">focal spot ≈ λ/2, roughly 300–500 nm</text>
+          <text x="175" y="262" text-anchor="middle" font-family="Inter" font-size="11" fill="#8a8f93">trap depth ∝ r³ · (weak intensity gradient)</text>
+
+          <text x="585" y="26" text-anchor="middle" font-family="Inter" font-size="13" font-weight="600" fill="#1c1e20">Plasmonic near-field trap</text>
+          <path d="M 500 150 L 545 122 L 545 178 Z" fill="none" stroke="#1c1e20" stroke-width="1.6"/>
+          <path d="M 670 150 L 625 122 L 625 178 Z" fill="none" stroke="#1c1e20" stroke-width="1.6"/>
+          <circle cx="585" cy="150" r="26" fill="url(#plasHot)"/>
+          <circle cx="585" cy="150" r="3.2" fill="#1c1e20"/>
+          <line x1="545" y1="150" x2="625" y2="150" stroke="#5b6167" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="585" y="244" text-anchor="middle" font-family="Inter" font-size="11.5" fill="#5b6167">gap ≈ 10–30 nm, set by fabrication</text>
+          <text x="585" y="262" text-anchor="middle" font-family="Inter" font-size="11" fill="#8a8f93">trap depth ∝ r³ · (field-enhanced gradient)</text>
+        </svg>
+        <p class="caption"><b>Figure 1.</b> A regular single-beam tweezer's diffraction-limited focus sets a trapping-volume floor of about (λ/2)³. A plasmonic near-field trap replaces that floor with a geometric one instead, the fabricated gap between metal nanostructures, which can be one to two orders of magnitude smaller and gives much steeper intensity gradients.</p>
+      </div>
+    </section>
+
+    <!-- ================= FRAMEWORK ================= -->
+    <section id="framework">
+      <h2>2. Theoretical Framework of Plasmonic Forces</h2>
+
+      <h3>2.1 Optical Gradient, Scattering, and Absorption Forces</h3>
+      <p>For a dielectric particle much smaller than the trapping wavelength, we can describe its interaction with a monochromatic optical field using the point-dipole (Rayleigh) approximation. The particle gets an induced dipole moment <em class="eqline">p = αE</em>. Its polarizability comes from the Clausius–Mossotti relation, for a sphere of radius <em class="eqline">r</em> and refractive index <em class="eqline">n<sub>p</sub></em>, sitting in a medium of index <em class="eqline">n<sub>m</sub></em>:</p>
+      <div class="eqblock">
+        α = 4πε₀ n<sub>m</sub>² r³ · (n<sub>p</sub>² − n<sub>m</sub>²) / (n<sub>p</sub>² + 2n<sub>m</sub>²)
+        <div class="eqnote">The r³ term here is the single most important scaling law in this whole report. Every force and potential downstream inherits this cubic dependence on particle radius.</div>
+      </div>
+      <p class="with-note">The time-averaged force on this dipole splits into two different pieces. The <strong>gradient force</strong> comes from how the field intensity varies in space. For a particle more polarizable than its surroundings, it points toward the region of highest intensity:
+        <span class="marginnote"><span class="aside-label">Note</span>The gradient force is conservative and reversible. It's what defines the trapping well. The scattering force is dissipative and always pushes along the beam's direction, which is why it works against the trap rather than for it.</span>
+      </p>
+      <div class="eqblock">
+        F<sub>grad</sub>(r) = (Re(α) / 2) ∇|E(r)|²
+      </div>
+      <p>The <strong>scattering force</strong>, on the other hand, comes from momentum transfer during re-radiation and absorption. It grows with the particle's scattering and absorption cross-sections, which in the Rayleigh limit scale as <em class="eqline">r⁶</em> and <em class="eqline">r³</em> respectively:</p>
+      <div class="eqblock">
+        F<sub>scat</sub> = n<sub>m</sub> σ<sub>scat</sub> ⟨S⟩ / c ,&nbsp;&nbsp; σ<sub>scat</sub> ∝ (ω⁴/c⁴)|α|²
+      </div>
+      <p>Stable trapping in three dimensions needs the gradient force to beat the scattering force everywhere along the beam axis. Ashkin and coworkers first worked this out quantitatively for regular tweezers.<sup class="cite">[<a href="#ref1">1</a>]</sup> Novotny, Bian, and Xie later revisited it for the plasmonic case. They solved Maxwell's equations rigorously for the field near an illuminated metal tip, going beyond the Rayleigh approximation, and showed that the resulting near-field gradients could trap and align dielectric particles at the nanometer scale.<sup class="cite">[<a href="#ref2">2</a>]</sup></p>
+
+      <h3>2.2 The Maxwell Stress Tensor Formalism</h3>
+      <p>The point-dipole picture above works well as an approximation, but it stops being reliable once the trapped object gets close in size to the nanostructure's field-confinement scale. That's exactly the regime we care about for plasmonic trapping of particles near the gap size. The rigorous, model-independent fix is to compute the total time-averaged optical force by integrating the Maxwell stress tensor over any closed surface <em class="eqline">S</em> enclosing the object:</p>
+      <div class="eqblock">
+        F = ∮<sub>S</sub> ⟨T⟩ · n̂ dA ,&nbsp;&nbsp; T<sub>ij</sub> = ε₀ε<sub>m</sub>(E<sub>i</sub>E<sub>j</sub> − ½δ<sub>ij</sub>|E|²) + μ₀(H<sub>i</sub>H<sub>j</sub> − ½δ<sub>ij</sub>|H|²)
+      </div>
+      <p>This approach makes no assumption about particle size relative to wavelength. That's why it's the standard method behind the finite-difference time-domain (FDTD) and finite-element (FEM) simulations used in modern plasmonic trap design, including Chen and colleagues' bowtie-nanocavity force calculations<sup class="cite">[<a href="#ref9">9</a>]</sup> and Saleh and Dionne's coaxial-aperture trapping theory.<sup class="cite">[<a href="#ref11">11</a>]</sup> The stress-tensor method also correctly captures multipolar and retardation effects that the point-dipole approximation misses, which matters once a particle's diameter takes up a good fraction of the plasmonic gap it sits in.</p>
+
+      <h3>2.3 LSPR Enhancement of the Local Density of Optical States</h3>
+      <p class="with-note">Why can a plasmonic nanostructure trap objects that a normal focus can't? The clearest way to answer this uses the local density of optical states (LDOS): the number of electromagnetic modes, per unit frequency and volume, that a dipole can couple into at a given point in space. Near a plasmonic nanostructure driven at resonance, the LDOS, and along with it the local field intensity |E<sub>loc</sub>|² for a fixed input power, gets boosted by one to three orders of magnitude compared to free space. That boost is packed into a volume set by the nanostructure's shape rather than by diffraction.<sup class="cite">[<a href="#ref10">10</a>]</sup>
+        <span class="marginnote"><span class="aside-label">Note</span>This boost multiplies directly into the gradient-force expression from Section 2.1. The same r³ polarizability now acts on a field gradient that's both steeper (packed into a smaller volume) and larger overall (LDOS-boosted). That's why plasmonic wells routinely reach tens to hundreds of k<sub>B</sub>T at input powers that would barely move the needle on a conventional trap.</span>
+      </p>
+      <p>Put these effects together, and the trapping potential felt by a small dielectric particle sitting at a fixed position <em class="eqline">r₀</em> in a plasmonic near-field can be written, in the dipole approximation, as <em class="eqline">U(r₀) = −(1/2)α|E<sub>loc</sub>(r₀)|²</em>. A trap is generally considered safe from thermal escape over realistic observation times once <em class="eqline">|U|</em> passes roughly ten times the thermal energy scale k<sub>B</sub>T. That's a rule of thumb used widely in the trapping literature, and we come back to it in Sections 2.4 and 4.1. Figure 2 below shows the field-concentration mechanism behind this boost for a bowtie nanoantenna, the design we cover in detail in Section 3.1.</p>
+
+      <div class="figure">
+        <canvas id="bowtieCanvas" width="760" height="260" role="img" aria-label="Animated diagram of a bowtie nanoantenna showing electric field lines from two triangular gold nanoprisms concentrating into the nanogap between their tips as the driving field oscillates"></canvas>
+        <div class="controls">
+          <button class="playbtn" id="bowtiePlay">Pause</button>
+        </div>
+        <p class="caption"><b>Figure 2.</b> A simplified field-line cartoon, not a real solver. Two gold triangles, tip to tip, form a resonant dipole antenna. Light polarized along the antenna axis drives charge to the tips, and the field lines, normally spread over a diffraction-limited region, get funneled into the nanogap instead. That's the local field boost described in Section 2.3.</p>
+      </div>
+
+      <h4>2.4 Illustrative model: trap depth versus particle radius</h4>
+      <p>The r³ scaling from Section 2.1 and the LDOS boost from Section 2.3 together lead to a testable prediction: a conventional gradient trap's depth, in units of k<sub>B</sub>T, should drop below the thermal-escape threshold at a much larger particle radius than a plasmonic trap's does. Figure 3 shows this comparison directly, using illustrative but scaling-faithful potential-well models for each trap type. Move the radius slider and you'll reproduce, qualitatively, the central finding that motivates this whole field: plasmonic designs extend stable optical trapping roughly an order of magnitude further down in particle size than conventional tweezers can reach.<sup class="cite">[<a href="#ref5">5</a>][<a href="#ref7">7</a>]</sup></p>
+
+      <div class="figure">
+        <div class="controls">
+          <div class="control" style="flex:2 1 260px;">
+            <label for="radiusSlider">Particle radius r</label>
+            <input type="range" id="radiusSlider" min="2" max="200" value="60" step="1">
+            <span class="val" id="radiusVal">60 nm</span>
+          </div>
+        </div>
+        <svg id="potentialChart" viewBox="0 0 700 340" role="img" aria-label="Log scale chart of trapping potential in units of thermal energy versus particle radius for a conventional optical tweezer and a plasmonic bowtie trap, with a dashed thermal escape threshold line"></svg>
+        <div class="legend">
+          <span><i style="background:#8a8f93"></i>Conventional gradient trap</span>
+          <span><i style="background:#a1783c"></i>Plasmonic bowtie trap</span>
+          <span><i style="background:#3f5b63; height:0; border-top:2px dashed #3f5b63;"></i>1 k<sub>B</sub>T escape threshold</span>
+        </div>
+        <p class="readout" id="potentialReadout"></p>
+        <p class="caption"><b>Figure 3.</b> Illustrative model: U<sub>conv</sub>(r) = K₁(r/100 nm)³ and U<sub>plasmon</sub>(r) = K₂(r/10 nm)³, both in units of k<sub>B</sub>T. The constants are chosen so the curves match the well-documented failure point of conventional traps near r ≈ 50–100 nm, and the extension of stable plasmonic trapping down to a few nanometers reported for double-nanohole and coaxial-aperture designs.<sup class="cite">[<a href="#ref12">12</a>][<a href="#ref17">17</a>]</sup> Both curves keep the same underlying r³ scaling. Only the coefficient, set by the field-intensity boost at the trap site, differs.</p>
+      </div>
+    </section>
+
+    <!-- ================= DESIGN ================= -->
+    <section id="design">
+      <h2>3. Nanostructure Design for Trapping</h2>
+      <p>Section 2 gives us two levers for improving a trap's stiffness: field-gradient steepness and local intensity boost. Nanostructure design is really just the engineering work of pulling those two levers as far as fabrication and material loss allow. In our reading of the literature, the main design strategies fall into three families: bowtie antennas, coaxial apertures, and plasmonic nanopillars. Each trades off gap size, tip sharpness, and material choice in a different way.</p>
+
+      <h3>3.1 Bowtie Nanoantennas</h3>
+      <p class="with-note">A bowtie antenna is two triangular (or tapered) metal nanoprisms set tip to tip, with a nanoscale gap between them. Light polarized along the antenna axis drives the free-electron gas in each triangle into a dipolar resonance. Because the triangles taper to a point, the induced surface charge gets squeezed into a shrinking cross-section as it nears the tip, a plasmonic version of the lightning-rod effect. This concentrates the field in the gap far more than a straight-edged dipole antenna of the same length ever could.
+        <span class="marginnote"><span class="aside-label">Note</span>Roxworthy and colleagues built gold bowtie nanoantenna arrays with trapping efficiencies up to twenty times better than conventional high-numerical-aperture tweezers. They mapped out "trapping phase diagrams" across input power, wavelength, polarization, and particle size to find the best operating points for single-particle capture, cluster assembly, and particle sorting.<sup class="cite">[<a href="#ref13">13</a>]</sup></span>
+      </p>
+      <p>Chen and coworkers took the bowtie idea further, building a fully enclosed plasmonic nanocavity. Putting the antenna gap inside a cavity boosted trapping efficiency and let them arrange multiple nano-objects at once instead of just capturing one particle.<sup class="cite">[<a href="#ref9">9</a>]</sup> Across this whole family of designs, trap stiffness rises sharply as the gap narrows and the triangle tips sharpen, since both changes push up the local field boost. The practical floor on gap size isn't set by physics though. It's set by electron-beam lithography resolution, and by quantum tunneling effects that kick in once gaps get down to about one nanometer, at which point the classical electromagnetic picture this whole report relies on starts to break down.</p>
+
+      <h3>3.2 Coaxial Apertures</h3>
+      <p>A coaxial (or "annular") aperture flips the bowtie geometry around. Instead of two protruding tips, it's a ring-shaped hole cut through a metal film, with a metal post at the center. Light couples into a cylindrical metal-insulator-metal waveguide whose cutoff depends on the width of the narrow annular gap, not the overall aperture size. That's the design's main advantage: you can shrink the gap down to ten nanometers or below, mostly independent of the aperture's outer size, while keeping it compatible with standard optical setups and confining the trapping field to a tiny annular volume.<sup class="cite">[<a href="#ref11">11</a>]</sup></p>
+      <p class="with-note">Yoo and colleagues built coaxial nanoapertures in gold films with gaps as narrow as ten nanometers, using atomic layer lithography. They showed low-power optical trapping of both dielectric nanoparticles and unmodified proteins right inside the annular gap, with the aperture's transmission acting as both the trapping mechanism and the single-molecule readout.<sup class="cite">[<a href="#ref17">17</a>]</sup>
+        <span class="marginnote"><span class="aside-label">Note</span>Saleh and Dionne's electromagnetic analysis of coaxial apertures found that, in this geometry, the trapping potential for sub-10-nm dielectric particles could clear the thermal-escape threshold at input intensities roughly two orders of magnitude below what an equivalent double-nanohole trap would need. That shows how much trap performance depends on the specific field shape of the chosen geometry, not just gap size alone.<sup class="cite">[<a href="#ref11">11</a>]</sup></span>
+      </p>
+
+      <h3>3.3 Plasmonic Nanopillars</h3>
+      <p>A third design skips the lithographically defined nanogap entirely. Instead it relies on the field boost that naturally shows up at the tip of a single sharply tapered metal structure, a nanopillar, nanocone, or template-stripped nanotip, usually built on or attached to a substrate engineered to handle the heat discussed in Section 5. Wang, Schonbrun, Steinvurzel, and Crozier trapped and rotated nanoparticles as small as 110 nm across using a template-stripped plasmonic nanopillar with a built-in heat sink. They reported roughly a hundredfold drop in local heating compared to earlier nanopillar designs without that feature, and without giving up trapping performance.<sup class="cite">[<a href="#ref8">8</a>]</sup> A single-tip design avoids the alignment problems that come with a two-part gap (bowtie) or an annular gap (coaxial aperture), so nanopillar arrays are relatively easy to fabricate at wafer scale. The trade-off is somewhat lower peak field boost than a well-optimized nanogap structure.</p>
+
+      <h3>3.4 Material Choice, Gap Size, and Tip Sharpness</h3>
+      <p>Three design variables show up again and again across all three geometries, and our read of the literature finds consistent trends for each. <strong>Gap size</strong> matters most: field boost in a nanogap scales roughly with the inverse of the gap width, so halving the gap can multiply the trap stiffness several times over. That comes at the cost of more local Ohmic heating (Section 5) and harder fabrication. <strong>Tip sharpness</strong> governs the lightning-rod contribution to field boost separately from gap size. A sharper tip squeezes surface charge into a smaller area and raises the local field for a fixed gap, which is why bowtie triangles are deliberately tapered instead of left as plain rectangular blocks. <strong>Material choice</strong> brings back a familiar trade-off from plasmonics in general: silver gives narrower, more tightly confined resonances than gold at the same shape, because of its lower interband damping in the visible range. But gold's chemical stability in water and biological fluid makes it the clear choice for the biomolecular trapping work discussed in Section 4, where a corroding trap surface just wouldn't hold up over an experiment's timescale.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 300" role="img" aria-label="Schematic comparison of three plasmonic trap geometries side by side: a bowtie nanoantenna with two triangular tips and a central gap, a coaxial aperture with a metal ring and central post, and a plasmonic nanopillar with a sharply tapered tip on a heat-sinking substrate">
+          <text x="130" y="26" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="#1c1e20">Bowtie antenna</text>
+          <path d="M 70 150 L 118 118 L 118 182 Z" fill="none" stroke="#1c1e20" stroke-width="1.6"/>
+          <path d="M 190 150 L 142 118 L 142 182 Z" fill="none" stroke="#1c1e20" stroke-width="1.6"/>
+          <circle cx="130" cy="150" r="16" fill="#a1783c" opacity="0.5"/>
+          <text x="130" y="210" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b6167">tip-to-tip gap</text>
+          <text x="130" y="225" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b6167">10–50 nm</text>
+
+          <text x="380" y="26" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="#1c1e20">Coaxial aperture</text>
+          <circle cx="380" cy="150" r="44" fill="none" stroke="#1c1e20" stroke-width="10"/>
+          <circle cx="380" cy="150" r="18" fill="#eceae0" stroke="#1c1e20" stroke-width="1.6"/>
+          <circle cx="380" cy="150" r="31" fill="#a1783c" opacity="0.35"/>
+          <text x="380" y="210" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b6167">annular gap</text>
+          <text x="380" y="225" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b6167">≈ 10 nm, tunable</text>
+
+          <text x="630" y="26" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="#1c1e20">Nanopillar + heat sink</text>
+          <rect x="580" y="176" width="100" height="14" fill="#c9c6ba"/>
+          <path d="M 605 176 L 630 118 L 655 176 Z" fill="none" stroke="#1c1e20" stroke-width="1.6"/>
+          <circle cx="630" cy="122" r="10" fill="#a1783c" opacity="0.55"/>
+          <rect x="580" y="190" width="100" height="8" fill="none" stroke="#5b6167" stroke-width="1" stroke-dasharray="2 2"/>
+          <text x="630" y="212" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b6167">apex field</text>
+          <text x="630" y="226" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b6167">hot spot; heat conducted to substrate</text>
+        </svg>
+        <p class="caption"><b>Figure 4.</b> The three trap designs from Section 3, drawn to a common scale. All three squeeze the optical near-field into a volume set by fabrication geometry rather than diffraction. They mainly differ in how that volume gets created and how well the design handles heat (Section 5).</p>
+      </div>
+    </section>
+
+    <!-- ================= DYNAMICS ================= -->
+    <section id="dynamics">
+      <h2>4. Trapping Dynamics: From Nanoparticles to Molecules</h2>
+
+      <h3>4.1 The Competition Between Gradient Force and Brownian Motion</h3>
+      <p class="with-note">A trapped particle in fluid never sits still. It keeps getting knocked around by collisions with solvent molecules, and the overdamped Langevin equation captures the net effect of this. For a particle confined near the bottom of a roughly harmonic optical potential of stiffness <em class="eqline">k</em>, its one-dimensional position <em class="eqline">x(t)</em> evolves as</p>
+      <div class="eqblock">
+        γ dx/dt = −k x + √(2γk<sub>B</sub>T) · ξ(t)
+        <div class="eqnote">γ = 6πη r is the Stokes drag coefficient for a sphere of radius r in a fluid of viscosity η; ξ(t) is uncorrelated unit-variance Gaussian white noise. This is the equation we integrate numerically in Figure 5 below.</div>
+      </div>
+      <p>At equilibrium, the equipartition theorem fixes the variance of the particle's wandering at <em class="eqline">⟨x²⟩ = k<sub>B</sub>T/k</em>, no matter what the fluid's viscosity is. The drag coefficient only controls how fast the particle explores its confinement, not how far it can go. A common rule of thumb in the trapping literature says a well depth of about ten times k<sub>B</sub>T is needed before thermally-driven escape over the barrier becomes rare enough, on lab timescales, to call the trap stable. Wells shallower than a few k<sub>B</sub>T are effectively unconfined. Since the drag coefficient γ and the polarizability α both scale with particle properties on their own, independent of trap design, the practical takeaway, shown interactively in Figure 5, is simple: raising trap stiffness k, whether by narrowing a plasmonic gap or turning up the intensity, directly shrinks the particle's accessible wandering area, exactly as the equipartition relation says it should.
+        <span class="marginnote"><span class="aside-label">Note</span>Grigorenko and colleagues measured this directly. Scanning a 200 nm particle across coupled gold nanodot pairs, they saw its Brownian excursions quenched by almost an order of magnitude compared to an unstructured optical trap running at the same input power.<sup class="cite">[<a href="#ref5">5</a>]</sup></span>
+      </p>
+
+      <div class="figure">
+        <canvas id="brownianCanvas" width="700" height="300" role="img" aria-label="Animated canvas showing a simulated nanoparticle undergoing Brownian motion inside a confining plasmonic trap, with a fading trail showing its recent path"></canvas>
+        <div class="controls">
+          <div class="control" style="flex:2 1 260px;">
+            <label for="stiffnessSlider">Trap stiffness k (normalized, ∝ 1/gap size or laser intensity)</label>
+            <input type="range" id="stiffnessSlider" min="1" max="60" value="12" step="1">
+            <span class="val" id="stiffnessVal">12</span>
+          </div>
+          <button class="playbtn" id="brownianPlay">Pause</button>
+        </div>
+        <p class="readout" id="brownianReadout"></p>
+        <p class="caption"><b>Figure 5.</b> A numerical integration of the overdamped Langevin equation above (Euler–Maruyama scheme, fixed thermal diffusion coefficient D = k<sub>B</sub>T/γ, dt = 1/60 s). The dashed circle marks the one-standard-deviation confinement radius √(k<sub>B</sub>T/k). Raising the stiffness slider, standing in for a narrower plasmonic gap or higher intensity, visibly shrinks both the live excursions and this theoretical radius.</p>
+      </div>
+
+      <h3>4.2 Trapping Biological Targets: Proteins and Nucleic Acids</h3>
+      <p>Moving plasmonic trapping from synthetic dielectric nanospheres to actual biomolecules needed two things: enough trap stiffness at radii of just a few nanometers, and a way to detect the trapping event without disturbing the trapped object. The double-nanohole aperture, two overlapping circular holes milled through a gold film that create a bowtie-like gap in negative relief, turned out to work well for both. Pang and Gordon used this design to trap a single bovine serum albumin (BSA) protein, with a hydrodynamic radius of just 3.4 nm. They found the optical force was strong enough not just to hold the protein but to partially unfold it, confirming this by varying the input power and solution pH and watching how the protein's trapping signature changed.<sup class="cite">[<a href="#ref12">12</a>]</sup></p>
+      <p class="with-note">The readout method in these experiments is elegant in its own right. Since the trapped object sits right inside the resonant aperture, its presence changes the light transmitted through the gold film, and that transmission gets tracked continuously on a photodetector. A trapping event shows up as a sharp, distinctive step or fluctuation in the transmitted intensity. This gives real-time, label-free information about binding, unbinding, and shape changes at the single-molecule level, with no fluorescent tag or radioactive marker needed. Kotnala and Gordon used this readout to watch the tumor-suppressor protein p53 bind to and stop the unzipping of a single DNA hairpin trapped in a double-nanohole aperture, directly observing the protein-DNA interaction through changes in the trap's transmission signal.<sup class="cite">[<a href="#ref16">16</a>]</sup>
+        <span class="marginnote"><span class="aside-label">Note</span>Nucleic acids and most globular proteins carry a natural negative surface charge and don't stand out much from water in polarizability. So trapping them usually needs either an extreme sub-10-nm gap or the resonance feedback mechanism covered next in Section 4.3, rather than gradient force alone at moderate field boost.</span>
+      </p>
+      <p>Based on these results, we think the double-nanohole and coaxial-aperture families (Section 3.2) are currently the strongest designs for trapping single biomolecules. That's because the biomolecule sits right at the peak of the field boost rather than just nearby, and because the aperture's own transmission gives you a built-in, alignment-free detection channel, something bowtie or nanopillar designs don't have. Those typically need a separate scattering or fluorescence setup for readout.</p>
+
+      <h3>4.3 Self-Induced Back-Action (SIBA)</h3>
+      <p>Juan, Gordon, Pang, Eftekhari, and Quidant introduced the self-induced back-action mechanism in 2009. It's a fundamentally different trapping strategy: the trapped particle doesn't just sit passively in a fixed field, it actively helps shape the trap that holds it.<sup class="cite">[<a href="#ref6">6</a>]</sup> The trick relies on the fact that a resonant nanoaperture's transmission spectrum depends on the effective refractive index of whatever fills the aperture. When a dielectric particle enters the aperture, it raises that effective index locally and shifts the aperture's transmission resonance to longer wavelengths. If you illuminate the aperture at a fixed laser wavelength set just below the empty-aperture resonance, this shift moves the resonance peak toward the illumination wavelength. That increases the transmitted, and thus locally confined, intensity right as the particle gets closer to the aperture's center.</p>
+      <p class="with-note">The resulting positive feedback loop is what defines SIBA: as the particle moves toward the trap center, the local restoring force it feels actually increases, instead of following the fixed-intensity profile a normal or non-resonant plasmonic trap would give it. So the particle gets pulled preferentially toward, and held stably at, the point of maximum shift-induced transmission. Juan and colleagues showed this experimentally by trapping a single 50 nm polystyrene sphere with a SIBA trap, using an intensity more than an order of magnitude below what an equivalent non-resonant nanoaperture trap would need. This directly confirmed that the particle's own presence was doing part of the trapping work.<sup class="cite">[<a href="#ref6">6</a>]</sup>
+        <span class="marginnote"><span class="aside-label">Note</span>SIBA is the physical mechanism behind the low-power protein and nucleic-acid trapping described in Section 4.2. Since the biomolecule itself shifts the aperture resonance, the double-nanohole and coaxial-aperture platforms used in that work effectively run in the SIBA regime whenever the trapped molecule sits within the resonant mode volume.</span>
+      </p>
+      <p>Figure 6 shows this feedback mechanism directly. Drag the simulated molecule toward the center of the plasmonic gap, and the illustrative transmission resonance shifts toward the fixed incident wavelength. That raises both the transmitted intensity and the restoring force the molecule feels, a self-reinforcing pull toward the trap center that has no equivalent in conventional gradient-force trapping.</p>
+
+      <div class="figure">
+        <svg id="sibaSchematic" viewBox="0 0 700 170" role="img" aria-label="Schematic of a nanoaperture in a gold film with a draggable circle representing a molecule that can be moved closer to or further from the center of the gap"></svg>
+        <p class="drag-hint">Drag the molecule (bronze circle) along the gap axis.</p>
+        <svg id="sibaChart" viewBox="0 0 700 300" role="img" aria-label="Chart of simulated transmission spectrum of the plasmonic aperture, with a fixed vertical line marking the incident laser wavelength, updating as the molecule position changes"></svg>
+        <p class="readout" id="sibaReadout"></p>
+        <p class="caption"><b>Figure 6.</b> Illustrative model: resonance wavelength λ<sub>res</sub>(d) = λ₀ + Δλ<sub>max</sub>·exp(−d/d₀), where d is the molecule-to-gap-center distance. Transmission at the fixed laser wavelength λ<sub>L</sub> follows a Lorentzian, T(λ) = T₀ / (1 + ((λ−λ<sub>res</sub>)/Γ)²). As d shrinks, λ<sub>res</sub> gets closer to λ<sub>L</sub> and T(λ<sub>L</sub>), a stand-in for local trapping intensity and restoring force, goes up. This reproduces the SIBA feedback mechanism from Juan et al.<sup class="cite">[<a href="#ref6">6</a>]</sup></p>
+      </div>
+    </section>
+
+    <!-- ================= THERMAL ================= -->
+    <section id="thermal">
+      <h2>5. Thermal Effects, Challenges, and Future Directions</h2>
+      <p class="with-note">Every mechanism in this report eventually comes down to driving free electrons in a metal nanostructure into forced oscillation. Every such oscillation loses some energy resistively through electron-phonon scattering, an unavoidable Ohmic loss usually described, in the language of Section 2, by the imaginary part of the metal's dielectric function. Baffou and Quidant's review of thermo-plasmonics spells out the consequence plainly: under continuous-wave illumination at plasmonic resonance, a metal nanostructure turns into an efficient, remotely controllable nanoscale heat source, capable of raising the local fluid temperature by tens of kelvin at the intensities routinely used for trapping.<sup class="cite">[<a href="#ref14">14</a>]</sup>
+        <span class="marginnote"><span class="aside-label">Note</span>This heating isn't just something to minimize. Thermo-plasmonic effects get used productively elsewhere, in photothermal therapy and optofluidic pumping. But in trapping, they're almost always an unwanted side effect competing with the very force the same illumination is meant to provide.</span>
+      </p>
+      <p>Local heating leads to two distinct problems in the surrounding fluid. <strong>Thermoplasmonic convection</strong> happens because the heated fluid around the nanostructure becomes less dense and buoyant, driving circulating flows that can sweep a weakly trapped particle right out of the optical potential well, especially in the shallower wells that come with larger gaps or lower input intensity. <strong>Thermophoresis</strong> is a separate, non-buoyant effect where a temperature gradient itself pushes on a suspended particle, the Ludwig-Soret effect, driving it up or down the gradient depending on the particle's surface chemistry. Since this force shows up even without any fluid flow, it stacks directly on top of the optical gradient force and makes it harder to calibrate trap stiffness from measured particle statistics.</p>
+      <p>Researchers fight these effects along several fronts. Pulsed illumination instead of continuous-wave cuts the time-averaged heat load while keeping high peak field boost during the brief moments the pulse is on, taking advantage of the fact that the plasmon's electromagnetic response is essentially instant while the fluid's thermal response is comparatively slow. Substrate and structural heat-sinking, like the template-stripped nanopillar design from Wang and colleagues, which cut local heating by roughly a hundredfold by carrying absorbed energy away through a thermally conductive substrate instead of letting it build up in the fluid, tackles the problem at its source.<sup class="cite">[<a href="#ref8">8</a>]</sup> Resonance-feedback designs that use self-induced back-action (Section 4.3) cut thermal load indirectly, simply because they need far less input intensity to reach a given trap stiffness in the first place, since the particle's own presence supplies part of the confining force rather than intensity alone.<sup class="cite">[<a href="#ref6">6</a>]</sup> A longer-term materials strategy, covered by Baffou and Quidant, looks at swapping gold and silver for alternative plasmonic materials in specific spectral windows to cut Ohmic loss directly. But echoing the broader trade-offs from Section 3.4, nothing has yet matched gold's biocompatibility for trapping in watery, biological environments.<sup class="cite">[<a href="#ref14">14</a>]</sup></p>
+
+      <div class="figure">
+        <div class="controls">
+          <div class="control">
+            <label for="thermalSeg">Illumination</label>
+            <div class="seg-group" id="thermalSeg">
+              <button data-mode="cw" class="active">Continuous wave</button>
+              <button data-mode="pulsed">Pulsed</button>
+            </div>
+          </div>
+        </div>
+        <canvas id="heatCanvas" width="700" height="320" role="img" aria-label="Heat map visualization showing simulated temperature distribution around a plasmonic nanostructure, with a toggle between continuous wave heating showing steady convection and pulsed heating showing oscillating lower average temperature"></canvas>
+        <div class="colorbar">
+          <span>ΔT low</span>
+          <div class="bar" id="colorbarGradient"></div>
+          <span>ΔT high</span>
+        </div>
+        <p class="readout" id="heatReadout"></p>
+        <p class="caption"><b>Figure 7.</b> An illustrative steady-state radial temperature model, ΔT(r) ∝ P<sub>abs</sub>/(4πκr), for a heated nano-source in a medium of thermal conductivity κ, drawn with a perceptually uniform magma-style color scale, matching the thermal-map convention noted in Baffou and Quidant.<sup class="cite">[<a href="#ref14">14</a>]</sup> Continuous-wave illumination keeps buoyant convection currents going (arrows). Pulsed illumination at the same peak power lowers the time-averaged ΔT, while the field boost, and so the trapping ability, during each pulse stays just as strong.</p>
+      </div>
+
+      <h3>Outlook: Integration with On-Chip Microfluidics</h3>
+      <p>The natural next step for the designs and mitigation strategies covered above is direct integration with microfluidic delivery: a lab-on-a-chip device where a dilute analyte solution flows past an array of plasmonic traps, bowtie, coaxial-aperture, or heat-sinked nanopillar, built directly into a microfluidic channel wall. Individual proteins, nucleic acid fragments, or viral particles would get captured, checked optically through the trap's own transmission signal, and released or replaced with no manual handling. Coaxial and double-nanohole apertures already combine trapping and label-free detection in a single optical channel (Section 4.2), and building arrays of these structures fits with wafer-scale lithography. So this integration path doesn't need a new physical mechanism so much as careful co-engineering of fluidics, thermal management, and optical addressing at scale. Building dense, addressable arrays of such traps, while keeping each site's thermal load within the bounds discussed above, is, in our view, the most important open engineering problem standing between the lab demonstrations covered in this report and a diagnostic platform you could actually deploy routinely.</p>
+
+      <div class="figure">
+        <svg viewBox="0 0 760 260" role="img" aria-label="Schematic of a microfluidic channel with an embedded array of plasmonic nanoaperture traps along the channel floor, with an inlet and outlet and a laser illuminating the trap array from below">
+          <rect x="60" y="70" width="640" height="90" fill="none" stroke="#1c1e20" stroke-width="1.6"/>
+          <text x="380" y="58" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="#1c1e20">Microfluidic channel</text>
+          <path d="M 20 110 L 60 110" stroke="#5b6167" stroke-width="1.4" marker-end="url(#arrowh)"/>
+          <text x="20" y="98" font-family="Inter" font-size="10.5" fill="#5b6167">inlet</text>
+          <path d="M 700 110 L 740 110" stroke="#5b6167" stroke-width="1.4" marker-end="url(#arrowh)"/>
+          <text x="700" y="98" font-family="Inter" font-size="10.5" fill="#5b6167">outlet</text>
+          <defs>
+            <marker id="arrowh" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#5b6167"/></marker>
+          </defs>
+          <circle cx="150" cy="95" r="3.5" fill="#a1783c"/>
+          <circle cx="260" cy="130" r="3.5" fill="#a1783c"/>
+          <circle cx="410" cy="100" r="3.5" fill="#a1783c"/>
+          <circle cx="540" cy="140" r="3.5" fill="#a1783c"/>
+          <rect x="60" y="160" width="640" height="14" fill="#c9c6ba"/>
+          <text x="380" y="188" text-anchor="middle" font-family="Inter" font-size="11" fill="#5b6167">gold film with coaxial-aperture trap array</text>
+          <g id="apertureRow">
+            <circle cx="150" cy="167" r="6" fill="none" stroke="#1c1e20" stroke-width="2"/>
+            <circle cx="250" cy="167" r="6" fill="none" stroke="#1c1e20" stroke-width="2"/>
+            <circle cx="350" cy="167" r="6" fill="none" stroke="#1c1e20" stroke-width="2"/>
+            <circle cx="450" cy="167" r="6" fill="none" stroke="#1c1e20" stroke-width="2"/>
+            <circle cx="550" cy="167" r="6" fill="none" stroke="#1c1e20" stroke-width="2"/>
+            <circle cx="650" cy="167" r="6" fill="none" stroke="#1c1e20" stroke-width="2"/>
+          </g>
+          <path d="M 380 250 L 380 195" stroke="#a1783c" stroke-width="2" stroke-dasharray="3 3"/>
+          <text x="380" y="240" text-anchor="middle" font-family="Inter" font-size="11" fill="#a1783c">trapping / readout laser</text>
+        </svg>
+        <p class="caption"><b>Figure 8.</b> A conceptual integration schematic: an array of coaxial-aperture (or bowtie) traps built into the floor of a microfluidic channel, addressed from below by a single fixed-wavelength laser, with each trap doing both capture and label-free transmission-based readout as described in Section 4.2.</p>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      This report was written as a graduate nanophotonics course project for academic evaluation. The interactive figures are simplified, scaling-faithful illustrative models built to show the qualitative physics from the cited literature (Rayleigh/dipole trapping theory, the Langevin equation, self-induced back-action, and thermoplasmonic heat generation). They are not outputs of a real numerical electromagnetic or fluid-dynamics solver. Every quantitative claim tied to a specific study comes from the reference listed; check the primary literature directly for research use.
+    </div>
+
+    <!-- ================= REFERENCES ================= -->
+    <section id="references">
+      <h2>References</h2>
+      <ol class="refs">
+        <li id="ref1"><em>Ashkin, A.; Dziedzic, J. M.; Bjorkholm, J. E.; Chu, S.</em> "Observation of a single-beam gradient force optical trap for dielectric particles." Optics Letters 11, no. 5 (1986): 288–290. DOI: <a href="https://doi.org/10.1364/OL.11.000288" target="_blank" rel="noopener">10.1364/OL.11.000288</a></li>
+        <li id="ref2"><em>Novotny, L.; Bian, R. X.; Xie, X. S.</em> "Theory of nanometric optical tweezers." Physical Review Letters 79, no. 4 (1997): 645–648. DOI: <a href="https://doi.org/10.1103/PhysRevLett.79.645" target="_blank" rel="noopener">10.1103/PhysRevLett.79.645</a></li>
+        <li id="ref3"><em>Righini, M.; Zelenina, A. S.; Girard, C.; Quidant, R.</em> "Parallel and selective trapping in a patterned plasmonic landscape." Nature Physics 3, no. 7 (2007): 477–480. DOI: <a href="https://doi.org/10.1038/nphys624" target="_blank" rel="noopener">10.1038/nphys624</a></li>
+        <li id="ref4"><em>Righini, M.; Volpe, G.; Girard, C.; Petrov, D.; Quidant, R.</em> "Surface plasmon optical tweezers: tunable optical manipulation in the femtonewton range." Physical Review Letters 100, no. 18 (2008): 186804. DOI: <a href="https://doi.org/10.1103/PhysRevLett.100.186804" target="_blank" rel="noopener">10.1103/PhysRevLett.100.186804</a></li>
+        <li id="ref5"><em>Grigorenko, A. N.; Roberts, N. W.; Dickinson, M. R.; Zhang, Y.</em> "Nanometric optical tweezers based on nanostructured substrates." Nature Photonics 2, no. 6 (2008): 365–370. DOI: <a href="https://doi.org/10.1038/nphoton.2008.78" target="_blank" rel="noopener">10.1038/nphoton.2008.78</a></li>
+        <li id="ref6"><em>Juan, M. L.; Gordon, R.; Pang, Y.; Eftekhari, F.; Quidant, R.</em> "Self-induced back-action optical trapping of dielectric nanoparticles." Nature Physics 5, no. 12 (2009): 915–919. DOI: <a href="https://doi.org/10.1038/nphys1422" target="_blank" rel="noopener">10.1038/nphys1422</a></li>
+        <li id="ref7"><em>Righini, M.; Ghenuche, P.; Cherukulappurath, S.; Myroshnychenko, V.; García de Abajo, F. J.; Quidant, R.</em> "Nano-optical trapping of Rayleigh particles and Escherichia coli bacteria with resonant optical antennas." Nano Letters 9, no. 10 (2009): 3387–3391. DOI: <a href="https://doi.org/10.1021/nl803677x" target="_blank" rel="noopener">10.1021/nl803677x</a></li>
+        <li id="ref8"><em>Wang, K.; Schonbrun, E.; Steinvurzel, P.; Crozier, K. B.</em> "Trapping and rotating nanoparticles using a plasmonic nano-tweezer with an integrated heat sink." Nature Communications 2 (2011): 469. DOI: <a href="https://doi.org/10.1038/ncomms1480" target="_blank" rel="noopener">10.1038/ncomms1480</a></li>
+        <li id="ref9"><em>Chen, C.; Juan, M. L.; Li, Y.; Maes, G.; Borghs, G.; Van Dorpe, P.; Quidant, R.</em> "Enhanced optical trapping and arrangement of nano-objects in a plasmonic nanocavity." Nano Letters 12, no. 1 (2011): 125–132. DOI: <a href="https://doi.org/10.1021/nl2031458" target="_blank" rel="noopener">10.1021/nl2031458</a></li>
+        <li id="ref10"><em>Juan, M. L.; Righini, M.; Quidant, R.</em> "Plasmon nano-optical tweezers." Nature Photonics 5, no. 6 (2011): 349–356. DOI: <a href="https://doi.org/10.1038/nphoton.2011.56" target="_blank" rel="noopener">10.1038/nphoton.2011.56</a></li>
+        <li id="ref11"><em>Saleh, A. A. E.; Dionne, J. A.</em> "Toward efficient optical trapping of sub-10-nm particles with coaxial plasmonic apertures." Nano Letters 12, no. 11 (2012): 5581–5586. DOI: <a href="https://doi.org/10.1021/nl302627c" target="_blank" rel="noopener">10.1021/nl302627c</a></li>
+        <li id="ref12"><em>Pang, Y.; Gordon, R.</em> "Optical trapping of a single protein." Nano Letters 12, no. 1 (2012): 402–406. DOI: <a href="https://doi.org/10.1021/nl203719v" target="_blank" rel="noopener">10.1021/nl203719v</a></li>
+        <li id="ref13"><em>Roxworthy, B. J.; Ko, K. D.; Kumar, A.; Fung, K. H.; Chow, E. K. C.; Liu, G. L.; Fang, N. X.; Toussaint, K. C.</em> "Application of plasmonic bowtie nanoantenna arrays for optical trapping, stacking, and sorting." Nano Letters 12, no. 2 (2012): 796–801. DOI: <a href="https://doi.org/10.1021/nl203811q" target="_blank" rel="noopener">10.1021/nl203811q</a></li>
+        <li id="ref14"><em>Baffou, G.; Quidant, R.</em> "Thermo-plasmonics: using metallic nanostructures as nano-sources of heat." Laser &amp; Photonics Reviews 7, no. 2 (2013): 171–187. DOI: <a href="https://doi.org/10.1002/lpor.201200003" target="_blank" rel="noopener">10.1002/lpor.201200003</a></li>
+        <li id="ref15"><em>Maragò, O. M.; Jones, P. H.; Gucciardi, P. G.; Volpe, G.; Ferrari, A. C.</em> "Optical trapping and manipulation of nanostructures." Nature Nanotechnology 8, no. 11 (2013): 807–819. DOI: <a href="https://doi.org/10.1038/nnano.2013.208" target="_blank" rel="noopener">10.1038/nnano.2013.208</a></li>
+        <li id="ref16"><em>Kotnala, A.; Gordon, R.</em> "Double nanohole optical tweezers visualize protein p53 suppressing unzipping of single DNA-hairpins." Biomedical Optics Express 5, no. 6 (2014): 1886–1894. DOI: <a href="https://doi.org/10.1364/BOE.5.001886" target="_blank" rel="noopener">10.1364/BOE.5.001886</a></li>
+        <li id="ref17"><em>Yoo, D.; Gurunatha, K. L.; Choi, H.-K.; Mohr, D. A.; Ertsgaard, C. T.; Gordon, R.; Oh, S.-H.</em> "Low-power optical trapping of nanoparticles and proteins with resonant coaxial nanoaperture using 10 nm gap." Nano Letters 18, no. 6 (2018): 3637–3642. DOI: <a href="https://doi.org/10.1021/acs.nanolett.8b00732" target="_blank" rel="noopener">10.1021/acs.nanolett.8b00732</a></li>
+      </ol>
+    </section>
+
+    <!-- ================= CREDITS ================= -->
+    <section id="credits" class="credits">
+      <h2>Credits</h2>
+      <dl>
+        <dt>Author</dt><dd>B Sriram Ravi Charan</dd>
+        <dt>Student ID</dt><dd>EP24B039</dd>
+        <dt>Course</dt><dd>Nanophotonics · Graduate Capstone Project</dd>
+        <dt>Instructor</dt><dd>Basudav Roy</dd>
+        <dt>Date</dt><dd>12-09-2026</dd>
+      </dl>
+    </section>
+
+    <footer class="page-footer">
+      The figures, interactive simulations, and illustrative numerical models here are simplified stand-ins built for clarity. They don't represent original experimental or numerical-solver results.
+    </footer>
+  </main>
+
+  <div class="side-notes-col" aria-hidden="true"></div>
+</div>
+
+<script>
+(function(){
+
+/* ====================================================================
+   Mobile nav toggle
+==================================================================== */
+try{
+  const navToggle = document.getElementById('navToggle');
+  const tocList = document.getElementById('tocList');
+  navToggle.addEventListener('click', () => {
+    const open = tocList.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  tocList.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    tocList.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }));
+}catch(e){ console.error('nav toggle init failed', e); }
+
+/* ====================================================================
+   Scroll spy + progress bar
+==================================================================== */
+try{
+  const sections = ['intro','framework','design','dynamics','thermal','references','credits'];
+  const labels = {intro:'Introduction', framework:'Theoretical Framework', design:'Nanostructure Design', dynamics:'Trapping Dynamics', thermal:'Thermal Effects & Outlook', references:'References', credits:'Credits'};
+  const tocLinks = document.querySelectorAll('.toc a');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabel = document.getElementById('progressLabel');
+  function onScroll(){
+    const scrollTop = window.scrollY + window.innerHeight * 0.3;
+    let current = sections[0];
+    for(const id of sections){
+      const el = document.getElementById(id);
+      if(el && el.offsetTop <= scrollTop) current = id;
+    }
+    tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current));
+    if(progressLabel) progressLabel.textContent = labels[current];
+    const doc = document.documentElement;
+    const denom = Math.max(1, doc.scrollHeight - window.innerHeight);
+    const pct = Math.min(100, Math.max(0, (window.scrollY / denom) * 100));
+    if(progressFill) progressFill.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+}catch(e){ console.error('scroll spy init failed', e); }
+
+/* ====================================================================
+   Generic line-chart SVG renderer (linear x, linear or log y)
+   Shared by Figure 3 (potential well) and Figure 6 (SIBA spectrum)
+==================================================================== */
+function renderLineChart(svgEl, cfg){
+  // cfg = { xs, series:[{ys,color,fillColor}], xMin,xMax, yMin,yMax, yLog,
+  //         xLabel, yLabel, gridXTicks:[...], markerX (data-space), thresholdY }
+  const W = 700, H = svgEl.viewBox.baseVal.height || 320;
+  const padL = 54, padR = 18, padT = 16, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const n = cfg.xs.length;
+
+  function xPix(xv){ return padL + ((xv - cfg.xMin)/(cfg.xMax - cfg.xMin)) * plotW; }
+  function yPix(yv){
+    if(cfg.yLog){
+      const ly = Math.log10(Math.max(yv, cfg.yMin));
+      const lMin = Math.log10(cfg.yMin), lMax = Math.log10(cfg.yMax);
+      return padT + plotH - ((ly - lMin)/(lMax - lMin)) * plotH;
+    }
+    return padT + plotH - ((yv - cfg.yMin)/(cfg.yMax - cfg.yMin)) * plotH;
+  }
+
+  let svg = '';
+  svg += `<line x1="${padL}" y1="${padT+plotH}" x2="${padL+plotW}" y2="${padT+plotH}" stroke="#e2e0d7" stroke-width="1"/>`;
+  svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="#e2e0d7" stroke-width="1"/>`;
+
+  (cfg.gridXTicks||[]).forEach(gx=>{
+    const gxp = xPix(gx);
+    svg += `<line x1="${gxp.toFixed(1)}" y1="${padT}" x2="${gxp.toFixed(1)}" y2="${padT+plotH}" stroke="#eeece4" stroke-width="1"/>`;
+    svg += `<text x="${gxp.toFixed(1)}" y="${padT+plotH+18}" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#8a8f93">${gx}</text>`;
+  });
+  if(cfg.yLog){
+    const lMin = Math.ceil(Math.log10(cfg.yMin)), lMax = Math.floor(Math.log10(cfg.yMax));
+    for(let e=lMin; e<=lMax; e++){
+      const gy = yPix(Math.pow(10,e));
+      svg += `<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${padL+plotW}" y2="${gy.toFixed(1)}" stroke="#eeece4" stroke-width="1"/>`;
+      const label = e<0 ? ('10⁻'+Math.abs(e)) : ('10'+(e===0?'':('^'+e)));
+      svg += `<text x="${padL-8}" y="${gy.toFixed(1)}" dy="3" text-anchor="end" font-family="Inter" font-size="10" fill="#8a8f93">${e===0?'1':Math.pow(10,e).toLocaleString()}</text>`;
+    }
+  }
+
+  cfg.series.forEach(s=>{
+    let path = '';
+    for(let i=0;i<n;i++){
+      const xp = xPix(cfg.xs[i]).toFixed(1), yp = yPix(s.ys[i]).toFixed(1);
+      path += (i===0?'M':'L') + xp + ',' + yp + ' ';
+    }
+    if(s.fillColor){
+      const areaPath = path + `L${xPix(cfg.xs[n-1]).toFixed(1)},${(padT+plotH).toFixed(1)} L${xPix(cfg.xs[0]).toFixed(1)},${(padT+plotH).toFixed(1)} Z`;
+      svg += `<path d="${areaPath}" fill="${s.fillColor}" stroke="none"/>`;
+    }
+    svg += `<path d="${path.trim()}" fill="none" stroke="${s.color}" stroke-width="2.2"/>`;
+  });
+
+  if(cfg.thresholdY !== undefined){
+    const ty = yPix(cfg.thresholdY);
+    svg += `<line x1="${padL}" y1="${ty.toFixed(1)}" x2="${padL+plotW}" y2="${ty.toFixed(1)}" stroke="#3f5b63" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+  }
+
+  if(cfg.markerX !== undefined){
+    const mx = xPix(cfg.markerX);
+    svg += `<line x1="${mx.toFixed(1)}" y1="${padT}" x2="${mx.toFixed(1)}" y2="${padT+plotH}" stroke="#1c1e20" stroke-width="1" stroke-dasharray="2 3" opacity="0.5"/>`;
+    cfg.series.forEach(s=>{
+      // interpolate y at markerX
+      let yAt = s.ys[s.ys.length-1];
+      for(let i=0;i<n-1;i++){
+        if((cfg.xs[i]<=cfg.markerX && cfg.xs[i+1]>=cfg.markerX)){
+          const t = (cfg.markerX - cfg.xs[i])/(cfg.xs[i+1]-cfg.xs[i] || 1);
+          yAt = s.ys[i] + t*(s.ys[i+1]-s.ys[i]);
+          break;
+        }
+      }
+      const my = yPix(yAt);
+      svg += `<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="4.5" fill="${s.color}" stroke="#fdfdfb" stroke-width="1.4"/>`;
+    });
+  }
+
+  if(cfg.xAxisLabel){
+    svg += `<text x="${(padL+plotW/2).toFixed(1)}" y="${H-4}" text-anchor="middle" font-family="Inter" font-size="11" fill="#5b6167">${cfg.xAxisLabel}</text>`;
+  }
+  if(cfg.yAxisLabel){
+    svg += `<text x="${padL-40}" y="${padT+4}" font-family="Inter" font-size="10.5" fill="#8a8f93">${cfg.yAxisLabel}</text>`;
+  }
+
+  svgEl.innerHTML = svg;
+}
+
+/* ====================================================================
+   Figure 2 — bowtie antenna field-line animation (Canvas)
+   Illustrative cartoon of dipolar charge oscillation and field
+   concentration into the nanogap, not a solved field map.
+==================================================================== */
+try{
+  const bcv = document.getElementById('bowtieCanvas');
+  const bctx = bcv.getContext('2d');
+  let bT = 0, bPlaying = true;
+
+  function drawBowtie(){
+    const w = bcv.width, h = bcv.height;
+    bctx.clearRect(0,0,w,h);
+    const cy = h/2 + 10;
+    const gap = 34;
+    const leftTipX = w/2 - gap/2;
+    const rightTipX = w/2 + gap/2;
+
+    // driving field oscillation (top strip), same convention as base electron figure
+    const fieldAmp = Math.sin(bT) * 26;
+    bctx.strokeStyle = '#3f5b63'; bctx.lineWidth = 2;
+    bctx.beginPath();
+    bctx.moveTo(w/2 - 130, 30);
+    bctx.lineTo(w/2 - 130 + fieldAmp, 30);
+    bctx.stroke();
+    bctx.fillStyle = '#3f5b63';
+    bctx.font = '12px Inter, sans-serif';
+    bctx.fillText('driving field E(t)', w/2 - 200, 18);
+
+    // two gold triangles, tip to tip
+    bctx.fillStyle = '#d8d2bd';
+    bctx.strokeStyle = '#1c1e20'; bctx.lineWidth = 1.6;
+    bctx.beginPath();
+    bctx.moveTo(leftTipX, cy);
+    bctx.lineTo(leftTipX - 150, cy - 70);
+    bctx.lineTo(leftTipX - 150, cy + 70);
+    bctx.closePath(); bctx.fill(); bctx.stroke();
+
+    bctx.beginPath();
+    bctx.moveTo(rightTipX, cy);
+    bctx.lineTo(rightTipX + 150, cy - 70);
+    bctx.lineTo(rightTipX + 150, cy + 70);
+    bctx.closePath(); bctx.fill(); bctx.stroke();
+
+    // charge buildup at tips, oscillating with driving field
+    const chargeMag = Math.abs(Math.sin(bT));
+    const sign = Math.sin(bT) >= 0 ? 1 : -1;
+    bctx.fillStyle = sign > 0 ? 'rgba(63,91,99,0.85)' : 'rgba(161,120,60,0.85)';
+    bctx.beginPath(); bctx.arc(leftTipX, cy, 5 + 6*chargeMag, 0, Math.PI*2); bctx.fill();
+    bctx.fillStyle = sign > 0 ? 'rgba(161,120,60,0.85)' : 'rgba(63,91,99,0.85)';
+    bctx.beginPath(); bctx.arc(rightTipX, cy, 5 + 6*chargeMag, 0, Math.PI*2); bctx.fill();
+
+    // field lines funnelled into the gap — bowed lines from tip to tip,
+    // density/curvature modulated by |charge| to suggest concentration
+    const nLines = 5;
+    for(let i=0;i<nLines;i++){
+      const spread = (i - (nLines-1)/2) * 12;
+      bctx.strokeStyle = `rgba(161,120,60,${0.25 + 0.5*chargeMag})`;
+      bctx.lineWidth = 1.3;
+      bctx.beginPath();
+      bctx.moveTo(leftTipX, cy + spread*0.4);
+      bctx.quadraticCurveTo(w/2, cy + spread, rightTipX, cy + spread*0.4);
+      bctx.stroke();
+    }
+
+    bctx.fillStyle = '#1c1e20';
+    bctx.font = '11.5px Inter, sans-serif';
+    bctx.textAlign = 'center';
+    bctx.fillText('nanogap field concentration', w/2, cy + 100);
+    bctx.textAlign = 'left';
+
+    if(bPlaying) bT += 0.06;
+  }
+  function bLoop(){ drawBowtie(); requestAnimationFrame(bLoop); }
+  bLoop();
+  document.getElementById('bowtiePlay').addEventListener('click', function(){
+    bPlaying = !bPlaying;
+    this.textContent = bPlaying ? 'Pause' : 'Play';
+  });
+}catch(e){ console.error('bowtie animation init failed', e); }
+
+/* ====================================================================
+   Figure 3 — potential well vs particle radius
+   Physics approximated:
+     U_conv(r)    = K1 * (r/100nm)^3      [k_B T units]  (Rayleigh-limit
+                    polarizability alpha ~ r^3, conventional gradient trap)
+     U_plasmon(r) = K2 * (r/10nm)^3       [k_B T units]  (same r^3 scaling,
+                    larger coefficient representing LSPR near-field
+                    intensity/LDOS enhancement, Section 2.3)
+   Threshold line at U = 1 k_B T marks the thermal-escape boundary.
+==================================================================== */
+try{
+  const K1 = 15;   // conventional trap coefficient, calibrated to fail near r~50-100nm
+  const K2 = 50;   // plasmonic trap coefficient, calibrated to remain stable to few-nm r
+
+  const radii = [];
+  for(let r=2; r<=200; r+=2) radii.push(r);
+
+  function uConv(r){ return K1 * Math.pow(r/100, 3); }
+  function uPlasmon(r){ return K2 * Math.pow(r/10, 3); }
+
+  const potentialSvg = document.getElementById('potentialChart');
+  const potentialReadout = document.getElementById('potentialReadout');
+  const radiusSlider = document.getElementById('radiusSlider');
+  const radiusVal = document.getElementById('radiusVal');
+
+  function stabilityBadge(u){
+    if(u >= 10) return '<span class="badge stable">stable</span>';
+    if(u >= 1)  return '<span class="badge marginal">marginal</span>';
+    return '<span class="badge unstable">unstable</span>';
+  }
+
+  function updatePotential(){
+    const r = +radiusSlider.value;
+    radiusVal.textContent = r + ' nm';
+    const ysConv = radii.map(uConv);
+    const ysPlas = radii.map(uPlasmon);
+    renderLineChart(potentialSvg, {
+      xs: radii,
+      series: [
+        {ys: ysConv, color:'#8a8f93', fillColor:null},
+        {ys: ysPlas, color:'#a1783c', fillColor:null}
+      ],
+      xMin: 2, xMax: 200,
+      yMin: 0.01, yMax: 100000, yLog: true,
+      gridXTicks: [2,50,100,150,200],
+      thresholdY: 1,
+      markerX: r,
+      xAxisLabel: 'Particle radius r (nm)',
+      yAxisLabel: 'U / kBT'
+    });
+    const uc = uConv(r), up = uPlasmon(r);
+    potentialReadout.innerHTML = 'At r = <strong>' + r + ' nm</strong>: conventional trap depth ≈ <strong>' + uc.toFixed(uc<1?2:1) + ' k<sub>B</sub>T</strong> ' + stabilityBadge(uc) +
+      ' &nbsp;·&nbsp; plasmonic trap depth ≈ <strong>' + up.toFixed(up<1?2:1) + ' k<sub>B</sub>T</strong> ' + stabilityBadge(up);
+  }
+  radiusSlider.addEventListener('input', updatePotential);
+  updatePotential();
+}catch(e){ console.error('potential chart init failed', e); }
+
+/* ====================================================================
+   Figure 5 — Brownian motion in a trap (overdamped Langevin equation)
+   Physics approximated (Euler-Maruyama integration, dt fixed):
+     dx = -(k/gamma) x dt + sqrt(2 D dt) * randn()
+     dy = -(k/gamma) y dt + sqrt(2 D dt) * randn()
+   D = kBT/gamma held fixed; k (trap stiffness, slider) varies.
+   Equipartition: <x^2> = kBT/k  -> confinement radius shown as dashed circle.
+==================================================================== */
+try{
+  const brCv = document.getElementById('brownianCanvas');
+  const brCtx = brCv.getContext('2d');
+  const stiffnessSlider = document.getElementById('stiffnessSlider');
+  const stiffnessVal = document.getElementById('stiffnessVal');
+  const brownianReadout = document.getElementById('brownianReadout');
+
+  const GAMMA = 1.0;      // normalized drag coefficient
+  const KBT = 1.0;        // normalized thermal energy (units absorbed into k, D)
+  const D = KBT / GAMMA;  // diffusion coefficient
+  const DT = 1/60;
+  const PX_PER_UNIT = 60; // canvas pixels per normalized length unit
+
+  let px = 0, py = 0; // position in normalized units
+  let trail = [];
+  let brPlaying = true;
+
+  function randn(){
+    // Box-Muller transform
+    let u = 0, v = 0;
+    while(u === 0) u = Math.random();
+    while(v === 0) v = Math.random();
+    return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
+  }
+
+  function stepBrownian(k){
+    const drift_x = -(k/GAMMA) * px * DT;
+    const drift_y = -(k/GAMMA) * py * DT;
+    const noise_x = Math.sqrt(2*D*DT) * randn();
+    const noise_y = Math.sqrt(2*D*DT) * randn();
+    px += drift_x + noise_x;
+    py += drift_y + noise_y;
+  }
+
+  function drawBrownian(){
+    const k = +stiffnessSlider.value;
+    if(brPlaying){
+      stepBrownian(k);
+      trail.push({x:px, y:py});
+      if(trail.length > 140) trail.shift();
+    }
+    const w = brCv.width, h = brCv.height;
+    const cx = w/2, cy = h/2;
+    brCtx.clearRect(0,0,w,h);
+
+    // confinement radius = sqrt(kBT/k), drawn dashed
+    const confR = Math.sqrt(KBT/k) * PX_PER_UNIT;
+    brCtx.strokeStyle = '#3f5b63';
+    brCtx.setLineDash([4,4]);
+    brCtx.lineWidth = 1.4;
+    brCtx.beginPath();
+    brCtx.arc(cx, cy, confR, 0, Math.PI*2);
+    brCtx.stroke();
+    brCtx.setLineDash([]);
+
+    // trail
+    for(let i=0;i<trail.length;i++){
+      const t = trail[i];
+      const alpha = i/trail.length;
+      brCtx.fillStyle = `rgba(161,120,60,${0.06 + 0.35*alpha})`;
+      brCtx.beginPath();
+      brCtx.arc(cx + t.x*PX_PER_UNIT, cy + t.y*PX_PER_UNIT, 2.4, 0, Math.PI*2);
+      brCtx.fill();
+    }
+
+    // particle
+    brCtx.fillStyle = '#1c1e20';
+    brCtx.beginPath();
+    brCtx.arc(cx + px*PX_PER_UNIT, cy + py*PX_PER_UNIT, 6, 0, Math.PI*2);
+    brCtx.fill();
+
+    brCtx.fillStyle = '#8a8f93';
+    brCtx.font = '11px Inter, sans-serif';
+    brCtx.textAlign = 'center';
+    brCtx.fillText('trap centre', cx, cy - confR - 10 < 16 ? 16 : cy - confR - 10);
+    brCtx.textAlign = 'left';
+
+    requestAnimationFrame(drawBrownian);
+  }
+
+  function updateBrownianReadout(){
+    const k = +stiffnessSlider.value;
+    stiffnessVal.textContent = k;
+    const confR = Math.sqrt(KBT/k);
+    brownianReadout.innerHTML = 'Trap stiffness k = <strong>' + k + '</strong> (normalized) &nbsp;·&nbsp; theoretical 1σ confinement radius √(k<sub>B</sub>T/k) = <strong>' + confR.toFixed(2) + '</strong> (normalized units)';
+  }
+  stiffnessSlider.addEventListener('input', updateBrownianReadout);
+  updateBrownianReadout();
+  drawBrownian();
+
+  document.getElementById('brownianPlay').addEventListener('click', function(){
+    brPlaying = !brPlaying;
+    this.textContent = brPlaying ? 'Pause' : 'Play';
+  });
+}catch(e){ console.error('brownian motion init failed', e); }
+
+/* ====================================================================
+   Figure 6 — SIBA demo: draggable molecule + resonance-shift spectrum
+   Physics approximated:
+     lambda_res(d) = lambda0 + dLambdaMax * exp(-d/d0)   (redshift as
+                     molecule approaches gap centre, d = distance)
+     T(lambda)     = T0 / (1 + ((lambda-lambda_res)/Gamma)^2)  (Lorentzian)
+   Fixed incident laser wavelength lambdaL; T(lambdaL) tracked as a proxy
+   for local trapping intensity / restoring force (SIBA feedback).
+==================================================================== */
+try{
+  const sibaSchematic = document.getElementById('sibaSchematic');
+  const sibaChart = document.getElementById('sibaChart');
+  const sibaReadout = document.getElementById('sibaReadout');
+
+  const D_MIN = 4, D_MAX = 60;      // nm, molecule-to-gap-centre distance range
+  const LAMBDA0 = 620;              // nm, empty-aperture resonance
+  const DLAMBDA_MAX = 90;           // nm, max redshift at d->0
+  const D0 = 18;                    // nm, redshift decay length
+  const GAMMA_LINE = 26;            // nm, Lorentzian linewidth
+  const LAMBDA_L = 660;             // nm, fixed incident laser wavelength
+
+  // schematic geometry: horizontal axis maps distance d in [D_MIN,D_MAX] to x in [gapCenterX+18, gapMouthX]
+  const gapCenterX = 350, gapMouthX = 620, trackY = 85;
+  const molMinX = gapCenterX + 14, molMaxX = gapMouthX;
+
+  let currentD = 40;
+  let dragging = false;
+
+  function distToX(d){
+    const t = (d - D_MIN)/(D_MAX - D_MIN);
+    return molMinX + t*(molMaxX - molMinX);
+  }
+  function xToDist(x){
+    const t = (x - molMinX)/(molMaxX - molMinX);
+    return D_MIN + Math.max(0,Math.min(1,t))*(D_MAX - D_MIN);
+  }
+
+  function drawSibaSchematic(){
+    const x = distToX(currentD);
+    let svg = '';
+    // gold film top-down with aperture gap
+    svg += `<rect x="60" y="70" width="580" height="16" fill="#c9c6ba"/>`;
+    svg += `<rect x="${gapCenterX-14}" y="66" width="28" height="24" fill="#f7f7f4" stroke="#1c1e20" stroke-width="1.4"/>`;
+    svg += `<text x="${gapCenterX}" y="55" text-anchor="middle" font-family="Inter" font-size="11" fill="#5b6167">nanoaperture (gap centre)</text>`;
+    svg += `<line x1="${molMinX}" y1="${trackY}" x2="${molMaxX}" y2="${trackY}" stroke="#e2e0d7" stroke-width="2"/>`;
+    svg += `<circle class="draggable" id="sibaMolecule" cx="${x.toFixed(1)}" cy="${trackY}" r="9" fill="#a1783c" stroke="#1c1e20" stroke-width="1.2"/>`;
+    svg += `<text x="${molMaxX+8}" y="${trackY+4}" font-family="Inter" font-size="10.5" fill="#8a8f93">gap mouth</text>`;
+    sibaSchematic.innerHTML = svg;
+
+    const molEl = document.getElementById('sibaMolecule');
+    molEl.addEventListener('pointerdown', (ev)=>{
+      dragging = true;
+      molEl.setPointerCapture(ev.pointerId);
+    });
+    molEl.addEventListener('pointermove', (ev)=>{
+      if(!dragging) return;
+      const rect = sibaSchematic.getBoundingClientRect();
+      const scaleX = 700/rect.width;
+      const localX = (ev.clientX - rect.left) * scaleX;
+      currentD = xToDist(Math.max(molMinX, Math.min(molMaxX, localX)));
+      drawSibaSchematic();
+      updateSibaChart();
+    });
+    molEl.addEventListener('pointerup', (ev)=>{ dragging = false; });
+    molEl.addEventListener('pointercancel', ()=>{ dragging = false; });
+  }
+
+  function transmission(lambda, lambdaRes){
+    return 1 / (1 + Math.pow((lambda - lambdaRes)/GAMMA_LINE, 2));
+  }
+
+  function updateSibaChart(){
+    const lambdaRes = LAMBDA0 + DLAMBDA_MAX * Math.exp(-currentD/D0);
+    const lambdas = [];
+    const ys = [];
+    for(let l=560; l<=780; l+=4){ lambdas.push(l); ys.push(transmission(l, lambdaRes)); }
+
+    renderLineChart(sibaChart, {
+      xs: lambdas,
+      series: [ {ys: ys, color:'#3f5b63', fillColor:'rgba(63,91,99,0.14)'} ],
+      xMin: 560, xMax: 780,
+      yMin: 0, yMax: 1.05, yLog:false,
+      gridXTicks: [560,620,680,720,780],
+      markerX: LAMBDA_L,
+      xAxisLabel: 'Wavelength (nm)',
+      yAxisLabel: 'T'
+    });
+
+    const tAtLaser = transmission(LAMBDA_L, lambdaRes);
+    sibaReadout.innerHTML = 'Gap distance d = <strong>' + currentD.toFixed(1) + ' nm</strong> &nbsp;·&nbsp; resonance λ<sub>res</sub> ≈ <strong>' + Math.round(lambdaRes) + ' nm</strong> &nbsp;·&nbsp; transmission at fixed laser (660 nm) T(λ<sub>L</sub>) ≈ <strong>' + tAtLaser.toFixed(2) + '</strong> · local intensity / restoring force proxy';
+  }
+
+  drawSibaSchematic();
+  updateSibaChart();
+}catch(e){ console.error('SIBA demo init failed', e); }
+
+/* ====================================================================
+   Figure 7 — thermoplasmonic heat map (CW vs pulsed)
+   Physics approximated:
+     Steady-state radial temperature rise around a heated nano-source:
+       dT(r) ~ P_abs / (4 * pi * kappa * r)     (1/r decay, CW)
+     Pulsed illumination: same peak dT, lower time-averaged dT via a
+     periodic duty-cycle envelope; convection arrows shown only for CW
+     since sustained buoyant flow requires continuous heating.
+==================================================================== */
+try{
+  const heatCv = document.getElementById('heatCanvas');
+  const heatCtx = heatCv.getContext('2d');
+  const thermalSeg = document.getElementById('thermalSeg');
+  const heatReadout = document.getElementById('heatReadout');
+  const colorbarGradient = document.getElementById('colorbarGradient');
+
+  let mode = 'cw';
+  let hT = 0;
+
+  // magma-like perceptually-ordered colour stops (dark purple -> red -> orange -> pale yellow)
+  const MAGMA = ['#0b0724','#3b0f70','#8c2981','#dd513a','#fca636','#fcfdbf'];
+  function hexToRgb(hex){
+    const v = parseInt(hex.slice(1),16);
+    return [(v>>16)&255, (v>>8)&255, v&255];
+  }
+  const MAGMA_RGB = MAGMA.map(hexToRgb);
+  function magmaColor(t){
+    t = Math.max(0, Math.min(1, t));
+    const seg = t * (MAGMA_RGB.length - 1);
+    const i0 = Math.floor(seg), i1 = Math.min(MAGMA_RGB.length-1, i0+1);
+    const f = seg - i0;
+    const c0 = MAGMA_RGB[i0], c1 = MAGMA_RGB[i1];
+    const r = Math.round(c0[0] + f*(c1[0]-c0[0]));
+    const g = Math.round(c0[1] + f*(c1[1]-c0[1]));
+    const b = Math.round(c0[2] + f*(c1[2]-c0[2]));
+    return `rgb(${r},${g},${b})`;
+  }
+  colorbarGradient.style.background = `linear-gradient(to right, ${MAGMA.join(',')})`;
+
+  thermalSeg.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    thermalSeg.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    mode = btn.dataset.mode;
+  });
+
+  function drawHeat(){
+    const w = heatCv.width, h = heatCv.height;
+    heatCtx.clearRect(0,0,w,h);
+    const cx = w/2, cy = h/2 + 10;
+    const maxR = 190;
+
+    // time-modulated envelope: CW = 1 (steady); pulsed = duty-cycle square-ish pulse
+    let envelope = 1.0;
+    let avgFactor = 1.0;
+    if(mode === 'pulsed'){
+      const period = 90; // frames
+      const duty = 0.25;
+      const phase = (hT % period) / period;
+      envelope = phase < duty ? 1.0 : 0.15;
+      avgFactor = duty + (1-duty)*0.15; // time-averaged heating fraction relative to CW
+    }
+
+    // background (cool)
+    heatCtx.fillStyle = magmaColor(0.02);
+    heatCtx.fillRect(0,0,w,h);
+
+    // radial dT(r) ~ 1/r profile, rendered as concentric rings from outside in
+    const rings = 60;
+    for(let i=rings;i>=1;i--){
+      const r = (i/rings) * maxR;
+      const rNorm = Math.max(r, 6);
+      let dT = (1/rNorm) * 40 * envelope; // arbitrary units
+      dT = Math.min(dT, 1.4);
+      const t = Math.min(1, dT);
+      heatCtx.fillStyle = magmaColor(t*0.9 + 0.02);
+      heatCtx.beginPath();
+      heatCtx.arc(cx, cy, r, 0, Math.PI*2);
+      heatCtx.fill();
+    }
+
+    // nanostructure at centre
+    heatCtx.fillStyle = '#d8d2bd';
+    heatCtx.strokeStyle = '#1c1e20'; heatCtx.lineWidth = 1.4;
+    heatCtx.beginPath(); heatCtx.arc(cx, cy, 12, 0, Math.PI*2); heatCtx.fill(); heatCtx.stroke();
+
+    // convection arrows — only meaningful under sustained CW heating
+    if(mode === 'cw'){
+      heatCtx.strokeStyle = 'rgba(247,247,244,0.85)';
+      heatCtx.lineWidth = 1.6;
+      const nArrows = 6;
+      for(let i=0;i<nArrows;i++){
+        const ang = (i/nArrows)*Math.PI*2 + hT*0.01;
+        const r0 = 30, r1 = 70 + 10*Math.sin(hT*0.05+i);
+        const x0 = cx + Math.cos(ang)*r0, y0 = cy + Math.sin(ang)*r0;
+        const x1 = cx + Math.cos(ang)*r1, y1 = cy + Math.sin(ang)*r1 - 14;
+        heatCtx.beginPath();
+        heatCtx.moveTo(x0,y0);
+        heatCtx.lineTo(x1,y1);
+        heatCtx.stroke();
+        heatCtx.beginPath();
+        heatCtx.moveTo(x1,y1);
+        heatCtx.lineTo(x1-4, y1+7);
+        heatCtx.lineTo(x1+4, y1+7);
+        heatCtx.closePath();
+        heatCtx.fillStyle = 'rgba(247,247,244,0.85)';
+        heatCtx.fill();
+      }
+      heatCtx.fillStyle = '#f7f7f4';
+      heatCtx.font = '10.5px Inter, sans-serif';
+      heatCtx.textAlign = 'center';
+      heatCtx.fillText('buoyant convection', cx, cy - maxR + 14 > 20 ? cy-maxR+14 : 20);
+      heatCtx.textAlign = 'left';
+    }
+
+    const peakDT = 40/6 ; // at r~6 (structure surface), envelope=1 reference
+    const avgDT = mode==='cw' ? peakDT : peakDT*avgFactor;
+    heatReadout.innerHTML = (mode==='cw' ? 'Continuous-wave' : 'Pulsed') + ' illumination &nbsp;·&nbsp; illustrative peak ΔT ≈ <strong>' + peakDT.toFixed(1) + ' (a.u.)</strong> &nbsp;·&nbsp; time-averaged ΔT ≈ <strong>' + avgDT.toFixed(1) + ' (a.u.)</strong>' + (mode==='pulsed' ? ' · reduced average heating at unchanged peak field enhancement' : ' · sustained heating drives convective flow');
+
+    hT += 1;
+    requestAnimationFrame(drawHeat);
+  }
+  drawHeat();
+}catch(e){ console.error('heat map init failed', e); }
+
+})();
+</script>
+</body>
+</html>
